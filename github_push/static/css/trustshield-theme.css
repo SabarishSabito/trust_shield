@@ -1,0 +1,685 @@
+/* ==========================================================================
+   TRUST SHIELD DESIGN SYSTEM TOKENS & BASE STYLES
+   Exact 6-Color Palette Specification:
+   1. Deep Forest Slate: #263B36
+   2. Warm Ivory:        #FAF7F0
+   3. Soft Mint:         #BDE8D5
+   4. Natural Sand:      #DCCBB4
+   5. Clean White:       #FFFFFF
+   6. Muted Slate:       #718078
+   Supporting:
+   - Positive/Safe:      #267653
+   - Warning/Review:     #B7791F
+   - Danger/Concern:     #B93838
+   - Subtle Border:      #E5E7E0
+   - Secondary Text:     #52635A
+   ========================================================================== */
+
+:root {
+  --color-forest: #263B36;
+  --color-forest-hover: #1c2c28;
+  --color-forest-light: #324e47;
+  --color-ivory: #FAF7F0;
+  --color-ivory-dark: #F2ECE1;
+  --color-mint: #BDE8D5;
+  --color-mint-light: #E4F6EE;
+  --color-mint-dark: #9FD6BD;
+  --color-sand: #DCCBB4;
+  --color-sand-light: #EDE3D4;
+  --color-sand-dark: #C7B298;
+  --color-white: #FFFFFF;
+  --color-muted: #718078;
+  --color-text-primary: #263B36;
+  --color-text-secondary: #52635A;
+  --color-positive: #267653;
+  --color-positive-bg: #E7F5EE;
+  --color-positive-border: #B7E4CE;
+  --color-warning: #B7791F;
+  --color-warning-bg: #FEF7EA;
+  --color-warning-border: #F3DCAC;
+  --color-danger: #B93838;
+  --color-danger-bg: #FDF1F1;
+  --color-danger-border: #F7C4C4;
+  --color-border: #E5E7E0;
+  --color-border-dark: #D4D8CF;
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(38, 59, 54, 0.05);
+  --shadow-md: 0 4px 14px -2px rgba(38, 59, 54, 0.06), 0 2px 6px -1px rgba(38, 59, 54, 0.04);
+  --shadow-lg: 0 12px 28px -4px rgba(38, 59, 54, 0.08), 0 4px 12px -2px rgba(38, 59, 54, 0.04);
+}
+
+/* Global resets & typography */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--color-ivory);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.02em;
+  color: var(--color-forest);
+}
+
+.tabular-nums {
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Utility classes mapping exact palette */
+.bg-forest { background-color: var(--color-forest); }
+.bg-forest:hover { background-color: var(--color-forest-hover); }
+.text-forest { color: var(--color-forest); }
+.border-forest { border-color: var(--color-forest); }
+
+.bg-ivory { background-color: var(--color-ivory); }
+.text-ivory { color: var(--color-ivory); }
+
+.bg-mint { background-color: var(--color-mint); }
+.bg-mint-light { background-color: var(--color-mint-light); }
+.text-mint { color: var(--color-mint); }
+.text-mint-dark { color: #1e5a41; }
+.border-mint { border-color: var(--color-mint); }
+
+.bg-sand { background-color: var(--color-sand); }
+.bg-sand-light { background-color: var(--color-sand-light); }
+.text-sand { color: var(--color-sand); }
+.border-sand { border-color: var(--color-sand); }
+
+.text-muted-slate { color: var(--color-muted); }
+.text-body-secondary { color: var(--color-text-secondary); }
+.border-subtle { border-color: var(--color-border); }
+
+/* Card styles */
+.ts-card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ts-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-dark);
+}
+
+.ts-card-sand {
+  background-color: var(--color-sand-light);
+  border: 1px solid var(--color-sand);
+  border-radius: var(--radius-lg);
+}
+
+/* Buttons */
+.ts-btn-primary {
+  background-color: var(--color-forest);
+  color: var(--color-white);
+  font-weight: 600;
+  padding: 0.65rem 1.35rem;
+  border-radius: var(--radius-md);
+  transition: all 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid transparent;
+}
+.ts-btn-primary:hover {
+  background-color: var(--color-forest-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.ts-btn-secondary {
+  background-color: var(--color-white);
+  color: var(--color-forest);
+  border: 1px solid var(--color-border-dark);
+  font-weight: 600;
+  padding: 0.65rem 1.35rem;
+  border-radius: var(--radius-md);
+  transition: all 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.ts-btn-secondary:hover {
+  background-color: var(--color-ivory-dark);
+  border-color: var(--color-sand);
+}
+
+.ts-btn-mint {
+  background-color: var(--color-mint);
+  color: var(--color-forest);
+  font-weight: 600;
+  padding: 0.65rem 1.35rem;
+  border-radius: var(--radius-md);
+  transition: all 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.ts-btn-mint:hover {
+  background-color: var(--color-mint-dark);
+}
+
+/* Status Badges */
+.ts-badge-safe {
+  background-color: var(--color-positive-bg);
+  color: var(--color-positive);
+  border: 1px solid var(--color-positive-border);
+}
+.ts-badge-warning {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning-border);
+}
+.ts-badge-danger {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger-border);
+}
+
+/* Form Controls */
+.ts-input {
+  width: 100%;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  color: var(--color-forest);
+  font-size: 0.925rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.ts-input:focus {
+  outline: none;
+  border-color: var(--color-forest);
+  box-shadow: 0 0 0 3px rgba(38, 59, 54, 0.1);
+}
+
+/* ==========================================================================
+   TWO PROFILES. TWO STORIES. & SOCIAL FORENSICS INTERACTION SYSTEM
+   Motion Design Specification (Apple-Quality Fluid Architecture):
+   - Elevation: 3px upward (translate3d(0, -3px, 0))
+   - Timing: 260ms elevation, 300ms overlay reveal, 240ms exit
+   - Easing:
+       * Entrance: cubic-bezier(0.22, 1, 0.36, 1) [Snappy start, organic deceleration]
+       * Exit:     cubic-bezier(0.16, 1, 0.3, 1)  [Soft finish, graceful grounding]
+   - Hardware accelerated (translate3d, backface-visibility: hidden)
+   - Zero layout shifts, transform & opacity only
+   ========================================================================== */
+
+.hero-profile-card {
+  position: relative;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 14px -2px rgba(38, 59, 54, 0.05), 0 2px 6px -1px rgba(38, 59, 54, 0.03);
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  /* Soft exit transition curve when mouse leaves */
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 240ms cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  cursor: pointer;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Standardized Equal Card Sizing across all Showcase Profiles */
+.platform-showcase-panel .hero-profile-card {
+  height: 100% !important;
+  min-height: 650px;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+@media (min-width: 640px) {
+  .platform-showcase-panel .hero-profile-card {
+    min-height: 670px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .platform-showcase-panel .hero-profile-card {
+    min-height: 690px;
+  }
+}
+
+/* Enable hardware layer prep only while hovered/focused to save idle GPU resources */
+.hero-profile-card:hover,
+.hero-profile-card:focus-visible,
+.hero-profile-card.is-revealed {
+  will-change: transform, box-shadow;
+  /* Snappy entrance transition curve */
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), 
+              box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1), 
+              border-color 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-profile-card:focus-visible {
+  outline: 2px solid var(--color-forest);
+  outline-offset: 3px;
+  box-shadow: 0 16px 32px -4px rgba(38, 59, 54, 0.12), 0 0 0 4px rgba(189, 232, 213, 0.8);
+  transform: translate3d(0, -3px, 0);
+}
+
+/* Base Profile Content: Smooth, sharp transition without text-blur lag */
+.profile-base-layer {
+  /* Exit transition: returns to full opacity with soft finish */
+  transition: opacity 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Prevent mock social preview buttons/links from hijacking mouse events and causing hover flicker */
+.hero-profile-card .profile-base-layer button,
+.hero-profile-card .profile-base-layer a,
+.hero-profile-card .profile-base-layer input {
+  pointer-events: none;
+}
+
+.hero-profile-card:hover .profile-base-layer,
+.hero-profile-card:focus-within .profile-base-layer,
+.hero-profile-card.is-revealed .profile-base-layer {
+  opacity: 0.08;
+  pointer-events: none;
+  /* Entrance transition: subtle fade into background */
+  transition: opacity 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Forensic Overlay Layer: Glides continuously from within the card */
+.forensic-overlay-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--color-forest);
+  border: 1px solid rgba(38, 59, 54, 0.12);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 8px, 0);
+  /* Exit transition: glides out with soft deceleration */
+  transition: opacity 240ms cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 30;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.hero-profile-card:hover .forensic-overlay-layer,
+.hero-profile-card:focus-within .forensic-overlay-layer,
+.hero-profile-card.is-revealed .forensic-overlay-layer {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate3d(0, 0, 0);
+  /* Entrance transition: precise and fluid reveal */
+  transition: opacity 300ms cubic-bezier(0.22, 1, 0.36, 1), 
+              transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Clean Card Hover States: 3px elevation with diffused soft shadow */
+.hero-profile-card.card-verified:hover,
+.hero-profile-card.card-verified:focus-within,
+.hero-profile-card.card-verified.is-revealed {
+  border-color: var(--color-positive);
+  box-shadow: 0 16px 32px -4px rgba(38, 59, 54, 0.10), 0 6px 14px -2px rgba(38, 118, 83, 0.08), 0 0 0 1px rgba(38, 118, 83, 0.28);
+  transform: translate3d(0, -3px, 0);
+}
+
+.hero-profile-card.card-authentic:hover,
+.hero-profile-card.card-authentic:focus-within,
+.hero-profile-card.card-authentic.is-revealed {
+  border-color: var(--color-mint-dark);
+  box-shadow: 0 16px 32px -4px rgba(38, 59, 54, 0.09), 0 6px 14px -2px rgba(189, 232, 213, 0.20), 0 0 0 1px rgba(189, 232, 213, 0.50);
+  transform: translate3d(0, -3px, 0);
+}
+
+.hero-profile-card.card-suspicious:hover,
+.hero-profile-card.card-suspicious:focus-within,
+.hero-profile-card.card-suspicious.is-revealed {
+  border-color: rgba(183, 121, 31, 0.55);
+  box-shadow: 0 16px 32px -4px rgba(183, 121, 31, 0.12), 0 6px 14px -2px rgba(183, 121, 31, 0.06), 0 0 0 1px rgba(183, 121, 31, 0.35);
+  transform: translate3d(0, -3px, 0);
+}
+
+/* Clean White Card Surfaces (Instagram-Style Previews) */
+.hero-profile-card.instagram-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  color: var(--color-forest);
+  box-shadow: 0 4px 14px -2px rgba(38, 59, 54, 0.06), 0 2px 6px -1px rgba(38, 59, 54, 0.04);
+}
+.hero-profile-card.instagram-card .forensic-overlay-layer {
+  background-color: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--color-forest);
+  border: 1px solid rgba(38, 59, 54, 0.12);
+}
+
+/* LinkedIn Profile Card Styling */
+.hero-profile-card.linkedin-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  color: #191919;
+}
+.hero-profile-card.linkedin-card .forensic-overlay-layer {
+  background-color: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #263B36;
+  border: 1px solid rgba(38, 59, 54, 0.15);
+}
+
+/* Facebook Profile Card Styling */
+.hero-profile-card.facebook-card {
+  background-color: #FFFFFF;
+  border: 1px solid #CED0D4;
+  color: #050505;
+}
+.hero-profile-card.facebook-card .forensic-overlay-layer {
+  background-color: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #263B36;
+  border: 1px solid rgba(38, 59, 54, 0.15);
+}
+
+/* X (Twitter) Profile Card Styling - Clean Light Theme */
+.hero-profile-card.x-card {
+  background-color: #FFFFFF;
+  border: 1px solid #EFF3F4;
+  color: #0F1419;
+}
+.hero-profile-card.x-card .forensic-overlay-layer {
+  background-color: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #263B36;
+  border: 1px solid rgba(38, 59, 54, 0.15);
+}
+
+/* Platform Showcase Tabs & Panels */
+.platform-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.25rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  transition: all 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+  outline: none;
+}
+.platform-tab-btn:hover {
+  color: var(--color-forest);
+  background-color: var(--color-ivory-dark);
+  border-color: var(--color-sand);
+}
+.platform-tab-btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(189, 232, 213, 0.8);
+}
+.platform-tab-btn.active {
+  color: var(--color-white);
+  background-color: var(--color-forest);
+  border-color: var(--color-forest);
+  box-shadow: var(--shadow-sm);
+}
+
+@keyframes platformPanelIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.platform-showcase-panel {
+  display: none;
+  opacity: 0;
+}
+.platform-showcase-panel.active {
+  display: block;
+  animation: platformPanelIn 280ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Profile Avatar & Banner Stacking: Avatar sits cleanly ON TOP of the banner, fully visible and unobstructed */
+.hero-profile-card .cover-banner {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.hero-profile-card .avatar-overlap-row {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+.hero-profile-card .avatar-circle {
+  position: relative !important;
+  z-index: 25 !important;
+  border: 4px solid #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16) !important;
+  background-color: #FFFFFF !important;
+}
+
+/* Ensure all avatar images in profile cards are perfectly framed and never cutoff */
+.hero-profile-card .avatar-circle img,
+.hero-profile-card .avatar-img,
+.hero-profile-card img[src*="avatar"] {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center 18% !important;
+  display: block !important;
+}
+
+/* Explicit dimension utilities for avatar circles & banners */
+.w-18 { width: 4.5rem !important; }
+.h-18 { height: 4.5rem !important; }
+.w-20 { width: 5rem !important; }
+.h-20 { height: 5rem !important; }
+.w-22 { width: 5.5rem !important; }
+.h-22 { height: 5.5rem !important; }
+
+/* Verified Circular Progress Ring Animation (Animates ONLY on hover/focus/tap) */
+.verified-progress-circle {
+  stroke-dasharray: 125.66;
+  stroke-dashoffset: 125.66;
+  /* Exit transition: soft return */
+  transition: stroke-dashoffset 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-profile-card:hover .verified-progress-circle,
+.hero-profile-card:focus-within .verified-progress-circle,
+.hero-profile-card.is-revealed .verified-progress-circle {
+  stroke-dashoffset: 6.53px; /* 125.66 * (1 - 0.948) = 6.534px */
+  /* Entrance transition: precise and fluid sweep */
+  transition: stroke-dashoffset 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-profile-card,
+  .profile-base-layer,
+  .forensic-overlay-layer,
+  .platform-showcase-panel,
+  .verified-progress-circle {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transform: none !important;
+  }
+  .hero-profile-card:hover,
+  .hero-profile-card:focus-visible,
+  .hero-profile-card.is-revealed {
+    transform: none !important;
+  }
+  .forensic-overlay-layer {
+    transform: none !important;
+  }
+  .hero-profile-card:hover .verified-progress-circle,
+  .hero-profile-card:focus-within .verified-progress-circle,
+  .hero-profile-card.is-revealed .verified-progress-circle {
+    stroke-dashoffset: 6.53px !important;
+  }
+}
+
+/* Technical Grid Pattern */
+.cyber-grid {
+  background-image: 
+    linear-gradient(to right, rgba(189, 232, 213, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(189, 232, 213, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.cyber-grid-dense {
+  background-image: 
+    linear-gradient(to right, rgba(189, 232, 213, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(189, 232, 213, 0.12) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Moving Mint Scanline */
+@keyframes cyber-scanline-anim {
+  0% {
+    top: -10%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    top: 110%;
+    opacity: 0;
+  }
+}
+
+.cyber-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #BDE8D5 50%, transparent 100%);
+  box-shadow: 0 0 12px 1px rgba(189, 232, 213, 0.6), 0 0 4px 1px #BDE8D5;
+  animation: cyber-scanline-anim 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* Radial Glow & Node Pulse */
+@keyframes cyber-pulse-anim {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+    box-shadow: 0 0 0 0 rgba(189, 232, 213, 0.4);
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+    box-shadow: 0 0 16px 4px rgba(189, 232, 213, 0.7);
+  }
+}
+
+.cyber-node-pulse {
+  animation: cyber-pulse-anim 3.5s ease-in-out infinite;
+}
+
+/* Orbital Rotation */
+@keyframes cyber-orbit-anim {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cyber-orbit {
+  animation: cyber-orbit-anim 40s linear infinite;
+}
+
+.cyber-orbit-reverse {
+  animation: cyber-orbit-anim 30s linear infinite reverse;
+}
+
+/* Glass-like Cyber Panel */
+.cyber-glass-panel {
+  background: rgba(38, 59, 54, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(189, 232, 213, 0.25);
+  box-shadow: 0 20px 40px -15px rgba(22, 36, 32, 0.4), inset 0 1px 0 rgba(189, 232, 213, 0.2);
+}
+
+.cyber-glass-light {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(189, 232, 213, 0.4);
+  box-shadow: 0 16px 32px -10px rgba(38, 59, 54, 0.08);
+}
+
+/* Ambient Floating */
+@keyframes cyber-float-anim {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.cyber-float {
+  animation: cyber-float-anim 5s ease-in-out infinite;
+}
+
+/* Respect Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  .cyber-scanline,
+  .cyber-node-pulse,
+  .cyber-orbit,
+  .cyber-orbit-reverse,
+  .cyber-float {
+    animation: none !important;
+    transform: none !important;
+  }
+}
