@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <title>Trust Shield | Scan History & Audit Dossiers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Typography: Manrope & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS & Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Centralized Theme Tokens -->
+  <link rel="stylesheet" href="/static/css/trustshield-theme.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            forest: { DEFAULT: '#263B36', hover: '#1c2c28', light: '#324e47' },
+            ivory: { DEFAULT: '#FAF7F0', dark: '#F2ECE1' },
+            mint: { DEFAULT: '#BDE8D5', light: '#E4F6EE', dark: '#9FD6BD' },
+            sand: { DEFAULT: '#DCCBB4', light: '#EDE3D4', dark: '#C7B298' },
+            mutedSlate: '#718078',
+            bodySecondary: '#52635A',
+            pos: '#267653',
+            warn: '#B7791F',
+            danger: '#B93838',
+            subtleBorder: '#E5E7E0'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            heading: ['Manrope', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-ivory text-forest min-h-screen flex flex-col font-sans">
+
+  <!-- ================= TOP NAVIGATION ================= -->
+  <header class="w-full bg-ivory/90 backdrop-blur-md sticky top-0 z-50 border-b border-subtleBorder">
+    <div class="max-w-7xl mx-auto px-6 h-18 py-4 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-forest flex items-center justify-center text-mint shadow-sm">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-heading font-extrabold text-forest text-base tracking-tight leading-tight">Trust Shield</span>
+          <span class="text-[10px] text-mutedSlate uppercase tracking-wider font-semibold">Audit History</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-bodySecondary">
+        <a href="/dashboard" class="hover:text-forest transition">Overview</a>
+        <a href="/scan/url" class="hover:text-forest transition">Analyze Profile</a>
+        <a href="/scan/photo" class="hover:text-forest transition">Screenshot Analysis</a>
+        <a href="/history" class="text-forest font-semibold border-b-2 border-forest pb-0.5">Scan History</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3">
+        <a href="/scan/url" class="ts-btn-primary text-xs py-2 px-4">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+          <span>New Analysis</span>
+        </a>
+        <a href="/login" class="text-xs text-bodySecondary hover:text-forest px-3 py-1.5 rounded-lg border border-subtleBorder hover:bg-ivory-dark transition">
+          Exit
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-10 space-y-8">
+    
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+      <div>
+        <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-forest tracking-tight">
+          Audit History & Dossiers
+        </h1>
+        <p class="text-bodySecondary text-sm mt-1">
+          Review all profile forensic evaluations and risk ratings recorded in this session.
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="refreshBtn" class="ts-btn-secondary text-xs py-2 px-3.5">
+          <i class="fa-solid fa-rotate-right text-xs"></i>
+          <span>Refresh List</span>
+        </button>
+        <a href="/scan/url" class="ts-btn-primary text-xs py-2 px-4">
+          <i class="fa-solid fa-magnifying-glass text-xs"></i>
+          <span>New Scan</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Search & Filters Card -->
+    <div class="ts-card p-5 rounded-2xl bg-white border border-subtleBorder flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+      
+      <!-- Search Input -->
+      <div class="relative flex-1">
+        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-mutedSlate">
+          <i class="fa-solid fa-search text-xs"></i>
+        </div>
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Search by username or audit ID..." 
+          class="ts-input pl-9 text-xs"
+        >
+      </div>
+
+      <!-- Filters Row -->
+      <div class="flex flex-wrap items-center gap-3">
+        
+        <!-- Platform Filter -->
+        <select id="platformFilter" class="ts-input text-xs py-2 px-3 w-auto">
+          <option value="ALL">All Platforms</option>
+          <option value="INSTAGRAM">Instagram</option>
+          <option value="TWITTER">Twitter / X</option>
+          <option value="LINKEDIN">LinkedIn</option>
+          <option value="FACEBOOK">Facebook</option>
+        </select>
+
+        <!-- Status Filter -->
+        <select id="statusFilter" class="ts-input text-xs py-2 px-3 w-auto">
+          <option value="ALL">All Statuses</option>
+          <option value="SAFE">Low Risk / Authentic (≥70%)</option>
+          <option value="REVIEW">Review Needed (45-69%)</option>
+          <option value="HIGH">High Concern (&lt;45%)</option>
+        </select>
+
+      </div>
+    </div>
+
+    <!-- History Table Card -->
+    <div class="ts-card rounded-2xl overflow-hidden bg-white border border-subtleBorder">
+      
+      <div class="p-5 border-b border-subtleBorder flex items-center justify-between">
+        <span class="text-xs font-bold text-mutedSlate uppercase tracking-wider">
+          <span id="filteredCount">0</span> records found
+        </span>
+        <span class="text-[11px] text-bodySecondary">
+          Live session in-memory log
+        </span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-sm">
+          <thead>
+            <tr class="bg-ivory border-b border-subtleBorder text-xs text-mutedSlate font-semibold uppercase tracking-wider">
+              <th class="py-3 px-6">Audit ID</th>
+              <th class="py-3 px-6">Target Profile</th>
+              <th class="py-3 px-6">Platform</th>
+              <th class="py-3 px-6">Safety Score</th>
+              <th class="py-3 px-6">Status / Verdict</th>
+              <th class="py-3 px-6 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody" class="divide-y divide-subtleBorder">
+            <!-- Populated via JavaScript -->
+            <tr>
+              <td colspan="6" class="py-12 text-center text-bodySecondary">
+                <div class="w-12 h-12 rounded-xl bg-ivory text-mutedSlate flex items-center justify-center mx-auto mb-3">
+                  <i class="fa-solid fa-folder-open text-xl"></i>
+                </div>
+                <p class="font-heading font-semibold text-forest text-sm">No profiles evaluated yet</p>
+                <p class="text-xs text-mutedSlate mt-1 max-w-sm mx-auto">
+                  Run a URL or screenshot scan to generate historical dossiers.
+                </p>
+                <div class="mt-4">
+                  <a href="/scan/url" class="ts-btn-primary text-xs py-2 px-4">
+                    <span>Inspect Target</span>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Dossier Detail Modal (Hidden by default) -->
+  <div id="detailModal" class="hidden fixed inset-0 z-50 bg-forest/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-5 border border-subtleBorder shadow-xl relative">
+      <div class="flex items-center justify-between pb-3 border-b border-subtleBorder">
+        <div class="flex items-center gap-2">
+          <span id="modalAuditId" class="text-xs font-mono text-mutedSlate">TS-LOG</span>
+          <span id="modalPlatform" class="text-[10px] font-bold px-2 py-0.5 rounded bg-ivory uppercase">INSTAGRAM</span>
+        </div>
+        <button id="closeModalBtn" class="text-mutedSlate hover:text-forest p-1">
+          <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+      </div>
+
+      <div>
+        <h3 id="modalUsername" class="font-heading text-xl font-bold text-forest">@target</h3>
+        <p id="modalRationale" class="text-xs text-bodySecondary mt-1 leading-relaxed"></p>
+      </div>
+
+      <div class="bg-ivory rounded-xl p-4 border border-sand flex items-center justify-between">
+        <span class="text-xs font-semibold text-bodySecondary">Safety Assessment</span>
+        <span id="modalSafety" class="font-heading text-2xl font-extrabold text-pos tabular-nums">--%</span>
+      </div>
+
+      <div class="space-y-2 text-xs">
+        <div class="flex justify-between py-1 border-b border-subtleBorder">
+          <span class="text-mutedSlate">Behavioral Velocity:</span>
+          <span id="modalBv" class="font-bold text-forest">-%</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-subtleBorder">
+          <span class="text-mutedSlate">Linguistic NLP:</span>
+          <span id="modalLn" class="font-bold text-forest">-%</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-subtleBorder">
+          <span class="text-mutedSlate">Vision Verified:</span>
+          <span id="modalVv" class="font-bold text-forest">-%</span>
+        </div>
+        <div class="flex justify-between py-1">
+          <span class="text-mutedSlate">Network Graph Risk:</span>
+          <span id="modalNr" class="font-bold text-forest">-%</span>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-subtleBorder flex justify-end">
+        <button id="closeModalBtn2" class="ts-btn-secondary text-xs py-2 px-4">
+          Close Dossier
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-ivory border-t border-subtleBorder py-6 mt-12 text-xs text-mutedSlate">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <span>Trust Shield Platform &bull; Audit Dossiers</span>
+      <div class="flex items-center gap-4">
+        <a href="/" class="hover:text-forest">Overview</a>
+        <a href="/dashboard" class="hover:text-forest">Dashboard</a>
+        <a href="/scan/url" class="hover:text-forest">URL Scanner</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    let rawHistory = [];
+
+    async function fetchHistory() {
+      try {
+        const res = await fetch('/api/history');
+        if (!res.ok) return;
+        rawHistory = await res.json();
+        applyFilters();
+      } catch (e) {
+        console.warn("Failed to load history:", e);
+      }
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      const plat = document.getElementById('platformFilter').value;
+      const status = document.getElementById('statusFilter').value;
+
+      let filtered = rawHistory.filter(item => {
+        const uname = (item.username || item.target || '').toLowerCase();
+        const aid = (item.audit_id || item.auditId || '').toLowerCase();
+        const matchesQ = !q || uname.includes(q) || aid.includes(q);
+
+        const itemPlat = (item.platform || 'INSTAGRAM').toUpperCase();
+        const matchesPlat = plat === 'ALL' || itemPlat === plat;
+
+        const s = Number(item.safety_rating ?? item.safetyRating ?? item.safety ?? 0);
+        let matchesStatus = true;
+        if (status === 'SAFE') matchesStatus = s >= 70;
+        else if (status === 'REVIEW') matchesStatus = s >= 45 && s < 70;
+        else if (status === 'HIGH') matchesStatus = s < 45;
+
+        return matchesQ && matchesPlat && matchesStatus;
+      });
+
+      document.getElementById('filteredCount').textContent = filtered.length;
+      renderTable(filtered);
+    }
+
+    function renderTable(list) {
+      const tbody = document.getElementById('historyTableBody');
+      tbody.innerHTML = '';
+
+      if (list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-12 text-center text-bodySecondary">
+              <p class="font-heading font-semibold text-forest text-sm">No matching dossiers found</p>
+              <p class="text-xs text-mutedSlate mt-1">Adjust your search or filter options.</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      list.forEach((item, idx) => {
+        const s = Number(item.safety_rating ?? item.safetyRating ?? 0);
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-ivory/50 transition";
+
+        let badgeClass = "ts-badge-safe";
+        if (s < 45) badgeClass = "ts-badge-danger";
+        else if (s < 70) badgeClass = "ts-badge-warning";
+
+        tr.innerHTML = `
+          <td class="py-3.5 px-6 font-mono text-xs text-mutedSlate">${item.audit_id || item.auditId || 'TS-LOG'}</td>
+          <td class="py-3.5 px-6 font-semibold text-forest">@${item.username || item.target || 'unknown'}</td>
+          <td class="py-3.5 px-6 text-xs text-bodySecondary uppercase">${item.platform || 'INSTAGRAM'}</td>
+          <td class="py-3.5 px-6 font-extrabold tabular-nums ${s >= 70 ? 'text-pos' : (s >= 45 ? 'text-warn' : 'text-danger')}">${s.toFixed(1)}%</td>
+          <td class="py-3.5 px-6"><span class="text-xs px-2.5 py-0.5 rounded-full font-semibold ${badgeClass}">${item.verdict || 'Evaluated'}</span></td>
+          <td class="py-3.5 px-6 text-right">
+            <button onclick="openModal(${idx})" class="text-xs font-semibold text-forest hover:underline">
+              View Details
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openModal(idx) {
+      const item = rawHistory[idx];
+      if (!item) return;
+
+      document.getElementById('modalAuditId').textContent = item.audit_id || item.auditId || 'TS-LOG';
+      document.getElementById('modalPlatform').textContent = (item.platform || 'INSTAGRAM').toUpperCase();
+      document.getElementById('modalUsername').textContent = `@${item.username || item.target || 'target'}`;
+      document.getElementById('modalRationale').textContent = item.verdict_rationale || item.verdictRationale || 'Audit completed.';
+
+      const s = Number(item.safety_rating ?? item.safetyRating ?? 0);
+      document.getElementById('modalSafety').textContent = `${s.toFixed(1)}%`;
+      document.getElementById('modalSafety').className = `font-heading text-2xl font-extrabold tabular-nums ${s >= 70 ? 'text-pos' : (s >= 45 ? 'text-warn' : 'text-danger')}`;
+
+      document.getElementById('modalBv').textContent = `${Math.round(item.behavioral_velocity ?? item.behavioral ?? 50)}%`;
+      document.getElementById('modalLn').textContent = `${Math.round(item.linguistic_nlp ?? item.linguistic ?? 50)}%`;
+      document.getElementById('modalVv').textContent = `${Math.round(item.vision_verified ?? item.vision ?? 50)}%`;
+      document.getElementById('modalNr').textContent = `${Math.round(item.network_risk ?? item.network ?? 20)}%`;
+
+      document.getElementById('detailModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('detailModal').classList.add('hidden');
+    }
+
+    document.getElementById('closeModalBtn').onclick = closeModal;
+    document.getElementById('closeModalBtn2').onclick = closeModal;
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('platformFilter').addEventListener('change', applyFilters);
+    document.getElementById('statusFilter').addEventListener('change', applyFilters);
+    document.getElementById('refreshBtn').addEventListener('click', fetchHistory);
+
+    document.addEventListener('DOMContentLoaded', fetchHistory);
+  </script>
+</body>
+</html>

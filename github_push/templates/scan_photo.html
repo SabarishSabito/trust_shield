@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <title>Trust Shield | Screenshot & Photo OCR Profile Forensics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Typography: Manrope & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS, Icons & Chart.js -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Centralized Theme Tokens -->
+  <link rel="stylesheet" href="/static/css/trustshield-theme.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            forest: { DEFAULT: '#263B36', hover: '#1c2c28', light: '#324e47' },
+            ivory: { DEFAULT: '#FAF7F0', dark: '#F2ECE1' },
+            mint: { DEFAULT: '#BDE8D5', light: '#E4F6EE', dark: '#9FD6BD' },
+            sand: { DEFAULT: '#DCCBB4', light: '#EDE3D4', dark: '#C7B298' },
+            mutedSlate: '#718078',
+            bodySecondary: '#52635A',
+            pos: '#267653',
+            warn: '#B7791F',
+            danger: '#B93838',
+            subtleBorder: '#E5E7E0'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            heading: ['Manrope', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-ivory text-forest min-h-screen flex flex-col font-sans">
+
+  <!-- ================= TOP NAVIGATION ================= -->
+  <header class="w-full bg-ivory/90 backdrop-blur-md sticky top-0 z-50 border-b border-subtleBorder">
+    <div class="max-w-7xl mx-auto px-6 h-18 py-4 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-forest flex items-center justify-center text-mint shadow-sm">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-heading font-extrabold text-forest text-base tracking-tight leading-tight">Trust Shield</span>
+          <span class="text-[10px] text-mutedSlate uppercase tracking-wider font-semibold">OCR Vision Forensics</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-bodySecondary">
+        <a href="/dashboard" class="hover:text-forest transition">Overview</a>
+        <a href="/scan/url" class="hover:text-forest transition">Analyze Profile</a>
+        <a href="/scan/photo" class="text-forest font-semibold border-b-2 border-forest pb-0.5">Screenshot Analysis</a>
+        <a href="/history" class="hover:text-forest transition">Scan History</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3">
+        <a href="/scan/url" class="ts-btn-secondary text-xs py-2 px-3.5">
+          <i class="fa-solid fa-link text-[10px]"></i>
+          <span>Switch to URL Scan</span>
+        </a>
+        <a href="/login" class="text-xs text-bodySecondary hover:text-forest px-3 py-1.5 rounded-lg border border-subtleBorder hover:bg-ivory-dark transition">
+          Exit
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-6 py-10 space-y-8">
+    
+    <!-- Header Card -->
+    <div class="ts-card p-8 rounded-2xl bg-white border border-subtleBorder">
+      <div class="flex items-center justify-between mb-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ivory text-forest text-xs font-semibold border border-sand">
+          <i class="fa-solid fa-camera text-[10px]"></i>
+          VECTOR 02: SCREENSHOT & VISION OCR
+        </div>
+        <div class="flex items-center gap-1.5 text-xs font-semibold text-pos bg-mint-light border border-mint px-3 py-1 rounded-full">
+          <span class="w-2 h-2 rounded-full bg-pos animate-pulse"></span>
+          OCR ENGINE READY
+        </div>
+      </div>
+
+      <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-forest">
+        Profile Screenshot & Photo Forensics
+      </h1>
+      <p class="text-bodySecondary text-xs sm:text-sm mt-1 max-w-2xl leading-relaxed">
+        Upload a mobile or desktop screenshot of any social media profile. The OCR engine automatically extracts usernames, follower stats, and bio patterns.
+      </p>
+
+      <!-- Dropzone Upload Area -->
+      <div id="dropzone" class="mt-6 border-2 border-dashed border-sand hover:border-forest/50 bg-ivory/60 hover:bg-ivory rounded-2xl p-8 text-center transition-all cursor-pointer relative overflow-hidden group">
+        <input type="file" id="fileInput" accept="image/*" class="hidden" />
+
+        <!-- Upload Prompt -->
+        <div id="uploadPrompt" class="space-y-3">
+          <div class="w-14 h-14 rounded-2xl bg-white text-forest border border-sand flex items-center justify-center mx-auto shadow-sm group-hover:scale-105 transition-transform">
+            <i class="fa-solid fa-cloud-arrow-up text-2xl"></i>
+          </div>
+          <div class="space-y-1">
+            <p class="font-heading font-bold text-forest text-sm">Click to browse or drop screenshot here</p>
+            <p class="text-xs text-mutedSlate">Supports PNG, JPG, JPEG, WebP &bull; Max 10MB</p>
+          </div>
+          <span class="inline-block ts-btn-secondary text-xs py-1.5 px-4 mt-2">Select Image</span>
+        </div>
+
+        <!-- Preview State (Hidden by default) -->
+        <div id="previewArea" class="hidden flex flex-col items-center space-y-4">
+          <div class="relative max-w-xs max-h-56 rounded-xl overflow-hidden border border-sand bg-white shadow-sm">
+            <img id="imagePreview" src="" alt="Screenshot Preview" class="object-contain max-h-56 w-auto mx-auto" />
+          </div>
+          <div class="text-center">
+            <p id="previewFilename" class="text-xs font-bold text-forest truncate max-w-xs"></p>
+            <p id="previewFilesize" class="text-[11px] text-mutedSlate mt-0.5"></p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button type="button" id="removeFileBtn" class="text-xs font-medium text-danger hover:underline px-2 py-1">
+              Remove & Choose Another
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Execute Scan Button -->
+      <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-subtleBorder">
+        <span class="text-xs text-mutedSlate">
+          <i class="fa-solid fa-circle-info text-pos mr-1"></i> Images are processed for OCR analysis and not used for AI training.
+        </span>
+        <button type="button" id="executeScanBtn" disabled class="ts-btn-primary text-sm py-2.5 px-6 opacity-50 cursor-not-allowed">
+          <i class="fa-solid fa-bolt text-xs"></i>
+          <span>Execute Forensic Scan</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Polished Loading Box (Hidden by default) -->
+    <div id="ocrLoadingBox" class="hidden ts-card p-8 rounded-2xl text-center space-y-3 bg-white">
+      <div class="w-12 h-12 rounded-xl bg-ivory text-forest border border-sand flex items-center justify-center mx-auto animate-spin">
+        <i class="fa-solid fa-circle-notch text-xl"></i>
+      </div>
+      <h3 class="font-heading font-bold text-forest text-base">Processing Screenshot & Neural OCR...</h3>
+      <p class="text-xs text-bodySecondary max-w-md mx-auto">
+        Extracting textual tokens, handle entropy, follower stats, and checking image compression artifacts.
+      </p>
+    </div>
+
+    <!-- OCR Results Card (Hidden until scan finishes) -->
+    <div id="ocrResultCard" class="hidden ts-card p-8 rounded-2xl bg-white border border-subtleBorder space-y-8">
+      
+      <!-- Result Header Section -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 pb-6 border-b border-subtleBorder">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-ivory border border-sand flex items-center justify-center text-forest text-xl font-heading font-extrabold">
+            <span id="ocrAvatarText">TS</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2.5">
+              <h2 id="ocrUsername" class="font-heading text-xl sm:text-2xl font-extrabold text-forest">@extracted_user</h2>
+              <span id="ocrPlatform" class="text-[10px] font-bold px-2 py-0.5 rounded bg-ivory text-forest uppercase tracking-wider">INSTAGRAM</span>
+            </div>
+            <p id="ocrAuditId" class="text-xs text-mutedSlate mt-0.5 font-mono">Dossier ID: TS-OCR-00000</p>
+          </div>
+        </div>
+
+        <div class="text-right w-full sm:w-auto">
+          <span class="text-[11px] font-bold text-mutedSlate uppercase tracking-wider block mb-0.5">Safety Assessment</span>
+          <div id="ocrSafetyRating" class="font-heading text-4xl font-extrabold text-pos tabular-nums">--.-%</div>
+          <span id="ocrVerdictBadge" class="inline-block mt-1 text-xs font-bold px-3 py-1 rounded-full ts-badge-safe">
+            Evaluated
+          </span>
+        </div>
+      </div>
+
+      <!-- Verdict Rationale -->
+      <div class="bg-ivory rounded-xl p-4 border border-sand-light">
+        <span class="text-xs font-bold text-forest uppercase tracking-wider block mb-1">OCR Forensic Rationale</span>
+        <p id="ocrRationale" class="text-xs sm:text-sm text-bodySecondary leading-relaxed">
+          OCR extraction completed successfully.
+        </p>
+      </div>
+
+      <!-- Signal Breakdown Grid (Radar + Bars) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-2">
+        
+        <!-- Radar Visual -->
+        <div class="bg-ivory/50 rounded-2xl p-4 border border-sand-light flex flex-col items-center justify-center">
+          <span class="text-xs font-bold text-mutedSlate uppercase tracking-wider mb-2">Multi-Axis Vector Profile</span>
+          <div class="relative w-full max-w-[280px] h-[260px]">
+            <canvas id="ocrRadarChart"></canvas>
+          </div>
+        </div>
+
+        <!-- 4-Pillar Bars -->
+        <div class="space-y-4">
+          <h4 class="font-heading font-bold text-forest text-sm uppercase tracking-wider">Pillar Integrity</h4>
+          
+          <div>
+            <div class="flex justify-between text-xs font-medium text-bodySecondary mb-1.5">
+              <span>Behavioral Velocity</span>
+              <span id="ocrValBv" class="font-semibold text-forest tabular-nums">0%</span>
+            </div>
+            <div class="h-2 w-full bg-ivory-dark rounded-full overflow-hidden">
+              <div id="ocrBarBv" class="h-full bg-forest rounded-full transition-all duration-700" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-medium text-bodySecondary mb-1.5">
+              <span>Linguistic & Bio Patterns</span>
+              <span id="ocrValLn" class="font-semibold text-forest tabular-nums">0%</span>
+            </div>
+            <div class="h-2 w-full bg-ivory-dark rounded-full overflow-hidden">
+              <div id="ocrBarLn" class="h-full bg-forest rounded-full transition-all duration-700" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-medium text-bodySecondary mb-1.5">
+              <span>Vision & Artifact Verification</span>
+              <span id="ocrValVv" class="font-semibold text-forest tabular-nums">0%</span>
+            </div>
+            <div class="h-2 w-full bg-ivory-dark rounded-full overflow-hidden">
+              <div id="ocrBarVv" class="h-full bg-forest rounded-full transition-all duration-700" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-medium text-bodySecondary mb-1.5">
+              <span>Network Graph Reciprocity</span>
+              <span id="ocrValNr" class="font-semibold text-forest tabular-nums">0%</span>
+            </div>
+            <div class="h-2 w-full bg-ivory-dark rounded-full overflow-hidden">
+              <div id="ocrBarNr" class="h-full bg-forest rounded-full transition-all duration-700" style="width: 0%"></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- OCR Limitations Notice -->
+      <div class="pt-6 border-t border-subtleBorder space-y-2 text-xs text-bodySecondary">
+        <h4 class="font-heading font-bold text-forest text-sm flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation text-warn"></i>
+          OCR Extraction Quality Notice
+        </h4>
+        <p class="leading-relaxed">
+          Results from screenshots depend on image sharpness, compression artifacts, and mobile platform UI scaling. This assessment reflects observable text and heuristic ratios and does not certify absolute identity.
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-subtleBorder">
+        <button type="button" onclick="resetUpload()" class="ts-btn-secondary text-xs py-2 px-4">
+          <i class="fa-solid fa-arrow-rotate-left text-[10px]"></i>
+          <span>Upload Another Screenshot</span>
+        </button>
+        <a href="/history" class="ts-btn-primary text-xs py-2 px-4">
+          <span>View Session History</span>
+          <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </a>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-ivory border-t border-subtleBorder py-6 mt-12 text-xs text-mutedSlate">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <span>Trust Shield &bull; Multi-modal profile forensics</span>
+      <div class="flex items-center gap-4">
+        <a href="/" class="hover:text-forest">Overview</a>
+        <a href="/dashboard" class="hover:text-forest">Dashboard</a>
+        <a href="/scan/url" class="hover:text-forest">URL Scanner</a>
+        <a href="/history" class="hover:text-forest">History</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- OCR & Chart Script -->
+  <script>
+    let ocrRadarInstance = null;
+    let currentSelectedFile = null;
+
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const uploadPrompt = document.getElementById('uploadPrompt');
+    const previewArea = document.getElementById('previewArea');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewFilename = document.getElementById('previewFilename');
+    const previewFilesize = document.getElementById('previewFilesize');
+    const executeBtn = document.getElementById('executeScanBtn');
+    const removeBtn = document.getElementById('removeFileBtn');
+
+    // Trigger file selection on click
+    dropzone.addEventListener('click', (e) => {
+      if (e.target !== removeBtn) fileInput.click();
+    });
+
+    // Drag-and-drop
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('border-forest');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('border-forest');
+      }, false);
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files.length > 0) handleFile(files[0]);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file (PNG, JPG, WebP).');
+        return;
+      }
+      currentSelectedFile = file;
+      previewFilename.textContent = file.name;
+      previewFilesize.textContent = (file.size / 1024).toFixed(1) + ' KB';
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imagePreview.src = e.target.result;
+        uploadPrompt.classList.add('hidden');
+        previewArea.classList.remove('hidden');
+        executeBtn.disabled = false;
+        executeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    removeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      resetUpload();
+    });
+
+    function resetUpload() {
+      currentSelectedFile = null;
+      fileInput.value = '';
+      imagePreview.src = '';
+      uploadPrompt.classList.remove('hidden');
+      previewArea.classList.add('hidden');
+      executeBtn.disabled = true;
+      executeBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      document.getElementById('ocrResultCard').classList.add('hidden');
+    }
+
+    function initOcrRadar(bv, ln, vv, nr) {
+      const ctx = document.getElementById('ocrRadarChart');
+      if (!ctx || typeof Chart === 'undefined') return;
+
+      if (ocrRadarInstance) ocrRadarInstance.destroy();
+
+      ocrRadarInstance = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ['Behavior', 'Linguistic', 'Vision', 'Network'],
+          datasets: [{
+            label: 'Signal Integrity',
+            data: [bv, ln, vv, nr],
+            backgroundColor: 'rgba(38, 59, 54, 0.12)',
+            borderColor: '#263B36',
+            borderWidth: 2,
+            pointBackgroundColor: '#267653',
+            pointBorderColor: '#FFFFFF',
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              min: 0,
+              max: 100,
+              ticks: { display: false, stepSize: 25 },
+              grid: { color: '#E5E7E0' },
+              angleLines: { color: '#E5E7E0' },
+              pointLabels: {
+                font: { family: 'Inter', size: 10, weight: '600' },
+                color: '#52635A'
+              }
+            }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    executeBtn.addEventListener('click', async () => {
+      if (!currentSelectedFile) return;
+
+      const loadingBox = document.getElementById('ocrLoadingBox');
+      const resultCard = document.getElementById('ocrResultCard');
+
+      executeBtn.disabled = true;
+      loadingBox.classList.remove('hidden');
+      resultCard.classList.add('hidden');
+
+      const formData = new FormData();
+      formData.append('file', currentSelectedFile);
+      formData.append('photo', currentSelectedFile);
+      formData.append('image', currentSelectedFile);
+
+      try {
+        const endpoints = ["/api/scan-photo", "/scan-photo"];
+        let result = null;
+        let lastError = null;
+
+        for (const ep of endpoints) {
+          try {
+            const res = await fetch(ep, { method: 'POST', body: formData });
+            if (res.status === 404) continue;
+            result = await res.json();
+            break;
+          } catch (err) {
+            lastError = err;
+          }
+        }
+
+        if (!result) throw new Error(lastError ? lastError.message : "Failed to connect to scan endpoint.");
+        if (result.status === "error") throw new Error(result.message || "OCR analysis failed.");
+
+        renderOcrResults(result);
+
+      } catch (err) {
+        alert("OCR Scan Notice: " + err.message);
+      } finally {
+        executeBtn.disabled = false;
+        loadingBox.classList.add('hidden');
+      }
+    });
+
+    function renderOcrResults(data) {
+      const uname = data.username || "extracted_account";
+      document.getElementById('ocrUsername').textContent = `@${uname}`;
+      document.getElementById('ocrAvatarText').textContent = uname.slice(0, 2).toUpperCase();
+      document.getElementById('ocrPlatform').textContent = (data.platform || "INSTAGRAM").toUpperCase();
+      document.getElementById('ocrAuditId').textContent = `Dossier ID: ${data.audit_id || data.auditId || 'TS-OCR'}`;
+
+      const safety = Number(data.safety_rating ?? data.safetyRating ?? data.trustScore ?? 0);
+      const ratingEl = document.getElementById('ocrSafetyRating');
+      const verdictEl = document.getElementById('ocrVerdictBadge');
+
+      ratingEl.textContent = `${safety.toFixed(1)}%`;
+      verdictEl.textContent = data.verdict || "Audited";
+
+      if (safety >= 70) {
+        ratingEl.className = "font-heading text-4xl font-extrabold text-pos tabular-nums";
+        verdictEl.className = "inline-block mt-1 text-xs font-bold px-3 py-1 rounded-full ts-badge-safe";
+      } else if (safety >= 45) {
+        ratingEl.className = "font-heading text-4xl font-extrabold text-warn tabular-nums";
+        verdictEl.className = "inline-block mt-1 text-xs font-bold px-3 py-1 rounded-full ts-badge-warning";
+      } else {
+        ratingEl.className = "font-heading text-4xl font-extrabold text-danger tabular-nums";
+        verdictEl.className = "inline-block mt-1 text-xs font-bold px-3 py-1 rounded-full ts-badge-danger";
+      }
+
+      document.getElementById('ocrRationale').textContent = data.verdict_rationale || data.verdictRationale || "Visual artifact analysis and text extraction completed.";
+
+      const b = Math.round(data.behavioral_velocity ?? data.behavioral ?? 50);
+      const l = Math.round(data.linguistic_nlp ?? data.linguistic ?? 50);
+      const v = Math.round(data.vision_verified ?? data.vision ?? 50);
+      const n = Math.round(data.network_risk ?? data.network ?? 20);
+
+      document.getElementById('ocrValBv').textContent = `${b}%`;
+      document.getElementById('ocrBarBv').style.width = `${b}%`;
+
+      document.getElementById('ocrValLn').textContent = `${l}%`;
+      document.getElementById('ocrBarLn').style.width = `${l}%`;
+
+      document.getElementById('ocrValVv').textContent = `${v}%`;
+      document.getElementById('ocrBarVv').style.width = `${v}%`;
+
+      document.getElementById('ocrValNr').textContent = `${100 - n}%`;
+      document.getElementById('ocrBarNr').style.width = `${100 - n}%`;
+
+      initOcrRadar(b, l, v, 100 - n);
+
+      const resultCard = document.getElementById('ocrResultCard');
+      resultCard.classList.remove('hidden');
+      resultCard.scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

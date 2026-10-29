@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <title>Trust Shield | URL Profile Analysis</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Typography: Manrope & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS, Icons & Chart.js -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Centralized Theme Tokens -->
+  <link rel="stylesheet" href="/static/css/trustshield-theme.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            forest: { DEFAULT: '#263B36', hover: '#1c2c28', light: '#324e47' },
+            ivory: { DEFAULT: '#FAF7F0', dark: '#F2ECE1' },
+            mint: { DEFAULT: '#BDE8D5', light: '#E4F6EE', dark: '#9FD6BD' },
+            sand: { DEFAULT: '#DCCBB4', light: '#EDE3D4', dark: '#C7B298' },
+            mutedSlate: '#718078',
+            bodySecondary: '#52635A',
+            pos: '#267653',
+            warn: '#B7791F',
+            danger: '#B93838',
+            subtleBorder: '#E5E7E0'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            heading: ['Manrope', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-ivory text-forest min-h-screen flex flex-col font-sans">
+
+  <!-- ================= TOP NAVIGATION ================= -->
+  <header class="w-full bg-ivory/90 backdrop-blur-md sticky top-0 z-50 border-b border-subtleBorder">
+    <div class="max-w-7xl mx-auto px-6 h-18 py-4 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-forest flex items-center justify-center text-mint shadow-sm">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-heading font-extrabold text-forest text-base tracking-tight leading-tight">Trust Shield</span>
+          <span class="text-[10px] text-mutedSlate uppercase tracking-wider font-semibold">URL Forensics</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-bodySecondary">
+        <a href="/dashboard" class="hover:text-forest transition">Overview</a>
+        <a href="/scan/url" class="text-forest font-semibold border-b-2 border-forest pb-0.5">Analyze Profile</a>
+        <a href="/scan/photo" class="hover:text-forest transition">Screenshot Analysis</a>
+        <a href="/history" class="hover:text-forest transition">Scan History</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3">
+        <a href="/scan/photo" class="ts-btn-secondary text-xs py-2 px-3.5">
+          <i class="fa-solid fa-camera text-[10px]"></i>
+          <span>Switch to OCR</span>
+        </a>
+        <a href="/login" class="text-xs text-bodySecondary hover:text-forest px-3 py-1.5 rounded-lg border border-subtleBorder hover:bg-ivory-dark transition">
+          Exit
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-6 py-10 space-y-8">
+
+    <!-- Input Card -->
+    <div class="ts-card p-8 rounded-2xl bg-white border border-subtleBorder">
+      <div class="flex items-center justify-between mb-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ivory text-forest text-xs font-semibold border border-sand">
+          <i class="fa-solid fa-link text-[10px]"></i>
+          VECTOR 01: DIRECT PROFILE URL
+        </div>
+        <div class="flex items-center gap-1.5 text-xs font-semibold text-pos bg-mint-light border border-mint px-3 py-1 rounded-full">
+          <span class="w-2 h-2 rounded-full bg-pos animate-pulse"></span>
+          READY FOR INSPECTION
+        </div>
+      </div>
+
+      <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-forest">
+        Analyze a Social Media Profile
+      </h1>
+      <p class="text-bodySecondary text-xs sm:text-sm mt-1 max-w-2xl leading-relaxed">
+        Evaluates handle character entropy, post cadences, follow ratios, and off-platform links across supported platforms.
+      </p>
+
+      <form id="urlScanForm" class="flex flex-col sm:flex-row gap-3 pt-6">
+        <div class="relative flex-1">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-mutedSlate">
+            <i class="fa-solid fa-globe text-sm"></i>
+          </div>
+          <input 
+            type="text" 
+            id="urlTargetInput" 
+            name="target" 
+            placeholder="https://www.instagram.com/username" 
+            class="ts-input pl-10 pr-28 text-sm" 
+            required
+          >
+          <div id="urlPlatformBadge" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-ivory text-mutedSlate uppercase tracking-wider">AUTO-DETECT</span>
+          </div>
+        </div>
+        
+        <button type="submit" id="urlSubmitBtn" class="ts-btn-primary text-sm py-3 px-7">
+          <i class="fa-solid fa-magnifying-glass text-xs"></i>
+          <span>Analyze Profile</span>
+        </button>
+      </form>
+
+      <!-- Supported Platforms Guide & Privacy Note -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-5 pt-4 border-t border-subtleBorder text-xs text-mutedSlate">
+        <div class="flex items-center gap-2">
+          <span>Supported:</span>
+          <span class="font-semibold text-forest">Instagram</span> &bull;
+          <span class="font-semibold text-forest">Twitter / X</span> &bull;
+          <span class="font-semibold text-forest">LinkedIn</span> &bull;
+          <span class="font-semibold text-forest">Facebook</span>
+        </div>
+        <span class="text-[11px] text-bodySecondary">
+          <i class="fa-solid fa-shield-halved text-pos mr-1"></i> Public data evaluation only &bull; No login required
+        </span>
+      </div>
+    </div>
+
+    <!-- Polished Loading Indicator (Hidden by default) -->
+    <div id="scanLoadingBox" class="hidden ts-card p-8 rounded-2xl text-center space-y-3 bg-white">
+      <div class="w-12 h-12 rounded-xl bg-ivory text-forest border border-sand flex items-center justify-center mx-auto animate-spin">
+        <i class="fa-solid fa-circle-notch text-xl"></i>
+      </div>
+      <h3 class="font-heading font-bold text-forest text-base">Evaluating Profile Signals...</h3>
+      <p class="text-xs text-bodySecondary max-w-md mx-auto">
+        Cross-referencing behavioral patterns, language entropy, and network ratios with our forensic ensemble.
+      </p>
+    </div>
+
+    <!-- Evaluation Results Card -->
+    <div id="scanResultCard" class="ts-card p-8 rounded-2xl bg-white border border-subtleBorder space-y-8">
+      
+      <!-- Result Header Section -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 pb-6 border-b border-subtleBorder">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-ivory border border-sand flex items-center justify-center text-forest text-xl font-heading font-extrabold">
+            <span id="resAvatarText">TS</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2.5">
+              <h2 id="resUsername" class="font-heading text-xl sm:text-2xl font-extrabold text-forest">target_account</h2>
+              <span id="resPlatform" class="text-[10px] font-bold px-2 py-0.5 rounded bg-ivory text-forest uppercase tracking-wider">INSTAGRAM</span>
+            </div>
+            <p id="resAuditId" class="text-xs text-mutedSlate mt-0.5 font-mono">Dossier ID: TS-00000</p>
+          </div>
+        </div>
+
+        <div class="text-right w-full sm:w-auto">
+          <span class="text-[11px] font-bold text-mutedSlate uppercase tracking-wider block mb-0.5">Overall Safety Assessment</span>
+          <div id="resSafetyRating" class="font-heading text-4xl font-extrabold text-pos tabular-nums">--.-%</div>
+          <span id="resVerdictBadge" class="inline-block mt-1 text-xs font-bold px-3 py-1 rounded-full ts-badge-safe">
+            Awaiting Inspection
+          </span>
+        </div>
+      </div>
+
+      <!-- Verdict Rationale -->
+      <div class="bg-ivory rounded-xl p-4 border border-sand-light">
+        <span class="text-xs font-bold text-forest uppercase tracking-wider block mb-1">Forensic Rationale</span>
+        <p id="resRationale" class="text-xs sm:text-sm text-bodySecondary leading-relaxed">
+          Submit a profile URL above to generate a forensic risk breakdown.
+        </p>
+      </div>
+
+      <!-- Signal Breakdown Grid (Bars + Radar Chart) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-2">
+        
+        <!-- Radar Chart Visual -->
+        <div class="bg-ivory/50 rounded-2xl p-4 border border-sand-light flex flex-col items-center justify-center">
+          <span class="text-xs font-bold text-mutedSlate uppercase tracking-wider mb-2">Multi-Axis Vector Profile</span>
+          <div class="relative w-full max-w-[280px] h-[260px]">
+            <canvas id="urlRadarChart"></canvas>
+          </div>
+        </div>
+
+        <!-- 4-Pillar Progress Bars -->
+        <div class="space-y-4">
+          <h4 class="font-heading font-bold text-forest text-sm uppercase tracking-wider">Signal Integrity</h4>
+          
+          <!-- Bar 1: Behavioral -->
+          <div>
+            <div class="flex justify-between text-xs font-medium text-bodySecondary mb-1.5">
+              <span>Behavioral Velocity</span>
+              <span id="valBv" class="font-semibold text-forest tabular-nums">0%</span>
+            </div>
+            <div class="h-2 w-full bg-ivory-dark rounded-full overflow-hidden">
+              <div id="barBv" class="h-full bg-forest rounded-full transition-all duration-700" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Bar 2: Linguistic -->
+          <div>
+            <div class="flex justify-between text-xs font-medium text-bodySecondary mb-1.5">
+              <span>Linguistic & Bio Patterns</span>
+              <span id="valLn" class="font-semibold text-forest tabular-nums">0%</span>
+            </div>
+            <div class="h-2 w-full bg-ivory-dark rounded-full overflow-hidden">
+              <div id="barLn" class="h-full bg-forest rounded-full transition-all duration-700" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Bar 3: Vision -->
+          <div>
+            <div class="flex justify-between text-xs font-medium text-bodySecondary mb-1.5">
+              <span>Vision Verification</span>
+              <span id="valVv" class="font-semibold text-forest tabular-nums">0%</span>
+            </div>
+            <div class="h-2 w-full bg-ivory-dark rounded-full overflow-hidden">
+              <div id="barVv" class="h-full bg-forest rounded-full transition-all duration-700" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Bar 4: Network -->
+          <div>
+            <div class="flex justify-between text-xs font-medium text-bodySecondary mb-1.5">
+              <span>Network Graph Integrity</span>
+              <span id="valNr" class="font-semibold text-forest tabular-nums">0%</span>
+            </div>
+            <div class="h-2 w-full bg-ivory-dark rounded-full overflow-hidden">
+              <div id="barNr" class="h-full bg-forest rounded-full transition-all duration-700" style="width: 0%"></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- "Why this result?" Evidence & Limitations Section -->
+      <div class="pt-6 border-t border-subtleBorder space-y-3">
+        <h4 class="font-heading font-bold text-forest text-sm flex items-center gap-2">
+          <i class="fa-solid fa-magnifying-glass-chart text-pos"></i>
+          Why this result? &bull; Evidence & Limitations
+        </h4>
+        <div class="grid sm:grid-cols-2 gap-4 text-xs text-bodySecondary">
+          <div class="p-3.5 rounded-xl bg-ivory border border-sand">
+            <span class="font-bold text-forest block mb-1">Observed Signals</span>
+            <ul id="observedSignalsList" class="space-y-1 list-disc list-inside">
+              <li>Handle character entropy calculated</li>
+              <li>Public metadata reciprocity checked</li>
+            </ul>
+          </div>
+          <div class="p-3.5 rounded-xl bg-ivory border border-sand">
+            <span class="font-bold text-forest block mb-1">Limitations & Verification</span>
+            <ul class="space-y-1 list-disc list-inside">
+              <li>Private account activity is not inspected</li>
+              <li>Risk score reflects statistical anomaly, not certified guilt</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-subtleBorder">
+        <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="ts-btn-secondary text-xs py-2 px-4">
+          <i class="fa-solid fa-arrow-up text-[10px]"></i>
+          <span>Analyze Another</span>
+        </button>
+        <div class="flex items-center gap-3">
+          <button type="button" id="copyAuditBtn" class="text-xs font-semibold text-bodySecondary hover:text-forest px-3 py-1.5 rounded-lg border border-subtleBorder hover:bg-ivory transition">
+            <i class="fa-regular fa-copy text-xs mr-1"></i> Copy Audit ID
+          </button>
+          <a href="/history" class="ts-btn-primary text-xs py-2 px-4">
+            <span>View Full History</span>
+            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-ivory border-t border-subtleBorder py-6 mt-12 text-xs text-mutedSlate">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <span>Trust Shield &bull; Automated Social Media Risk Intelligence</span>
+      <div class="flex items-center gap-4">
+        <a href="/" class="hover:text-forest">Overview</a>
+        <a href="/dashboard" class="hover:text-forest">Dashboard</a>
+        <a href="/scan/photo" class="hover:text-forest">Screenshot OCR</a>
+        <a href="/history" class="hover:text-forest">History</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script: Form Handling, Platform Detection & Chart.js -->
+  <script>
+    let radarChartInstance = null;
+
+    function initRadar(bv, ln, vv, nr) {
+      const ctx = document.getElementById('urlRadarChart');
+      if (!ctx || typeof Chart === 'undefined') return;
+
+      if (radarChartInstance) {
+        radarChartInstance.destroy();
+      }
+
+      radarChartInstance = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ['Behavior', 'Linguistic', 'Vision', 'Network'],
+          datasets: [{
+            label: 'Signal Integrity',
+            data: [bv, ln, vv, nr],
+            backgroundColor: 'rgba(38, 59, 54, 0.12)',
+            borderColor: '#263B36',
+            borderWidth: 2,
+            pointBackgroundColor: '#267653',
+            pointBorderColor: '#FFFFFF',
+            pointHoverBackgroundColor: '#1c2c28',
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              min: 0,
+              max: 100,
+              ticks: { display: false, stepSize: 25 },
+              grid: { color: '#E5E7E0' },
+              angleLines: { color: '#E5E7E0' },
+              pointLabels: {
+                font: { family: 'Inter', size: 10, weight: '600' },
+                color: '#52635A'
+              }
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    // Dynamic Platform Detection
+    const urlInput = document.getElementById('urlTargetInput');
+    const platBadge = document.getElementById('urlPlatformBadge');
+
+    urlInput.addEventListener('input', (e) => {
+      const val = e.target.value.toLowerCase();
+      let name = "AUTO-DETECT";
+      if (val.includes("twitter.com") || val.includes("x.com")) name = "X / TWITTER";
+      else if (val.includes("linkedin.com")) name = "LINKEDIN";
+      else if (val.includes("facebook.com") || val.includes("fb.com")) name = "FACEBOOK";
+      else if (val.includes("instagram.com")) name = "INSTAGRAM";
+      platBadge.innerHTML = `<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-ivory text-forest uppercase tracking-wider">${name}</span>`;
+    });
+
+    // Populate UI with Analysis Results
+    function renderAnalysisResult(data) {
+      const uname = data.username || data.target || "unknown_user";
+      document.getElementById('resUsername').textContent = `@${uname}`;
+      document.getElementById('resAvatarText').textContent = uname.slice(0, 2).toUpperCase();
+      document.getElementById('resPlatform').textContent = (data.platform || "INSTAGRAM").toUpperCase();
+      document.getElementById('resAuditId').textContent = `Dossier ID: ${data.audit_id || data.auditId || 'TS-LOG'}`;
+
+      const safety = Number(data.safety_rating ?? data.safetyRating ?? data.safety ?? 0);
+      const ratingEl = document.getElementById('resSafetyRating');
+      const verdictEl = document.getElementById('resVerdictBadge');
+      
+      ratingEl.textContent = `${safety.toFixed(1)}%`;
+      verdictEl.textContent = data.verdict || "Evaluated";
+
+      if (safety >= 70) {
+        ratingEl.className = "font-heading text-4xl font-extrabold text-pos tabular-nums";
+        verdictEl.className = "inline-block mt-1 text-xs font-bold px-3 py-1 rounded-full ts-badge-safe";
+      } else if (safety >= 45) {
+        ratingEl.className = "font-heading text-4xl font-extrabold text-warn tabular-nums";
+        verdictEl.className = "inline-block mt-1 text-xs font-bold px-3 py-1 rounded-full ts-badge-warning";
+      } else {
+        ratingEl.className = "font-heading text-4xl font-extrabold text-danger tabular-nums";
+        verdictEl.className = "inline-block mt-1 text-xs font-bold px-3 py-1 rounded-full ts-badge-danger";
+      }
+
+      document.getElementById('resRationale').textContent = data.verdict_rationale || data.verdictRationale || "Forensic analysis completed.";
+
+      // Bars
+      const bv = Math.round(data.behavioral_velocity ?? data.behavioral ?? 50);
+      const ln = Math.round(data.linguistic_nlp ?? data.linguistic ?? 50);
+      const vv = Math.round(data.vision_verified ?? data.vision ?? 50);
+      const nr = Math.round(data.network_risk ?? data.network ?? 20);
+
+      document.getElementById('valBv').textContent = `${bv}%`;
+      document.getElementById('barBv').style.width = `${bv}%`;
+
+      document.getElementById('valLn').textContent = `${ln}%`;
+      document.getElementById('barLn').style.width = `${ln}%`;
+
+      document.getElementById('valVv').textContent = `${vv}%`;
+      document.getElementById('barVv').style.width = `${vv}%`;
+
+      document.getElementById('valNr').textContent = `${100 - nr}%`;
+      document.getElementById('barNr').style.width = `${100 - nr}%`;
+
+      // Update Radar (pass network integrity: 100 - risk)
+      initRadar(bv, ln, vv, 100 - nr);
+
+      // Observed Signals list
+      const obsList = document.getElementById('observedSignalsList');
+      obsList.innerHTML = `
+        <li>Handle: @${uname} (Linguistic entropy scored)</li>
+        <li>Platform: ${data.platform || 'Instagram'} structure evaluated</li>
+        <li>Follower reciprocity calibrated</li>
+      `;
+
+      // Setup copy button
+      document.getElementById('copyAuditBtn').onclick = () => {
+        navigator.clipboard.writeText(data.audit_id || data.auditId || 'TS-LOG');
+        alert("Copied Audit ID: " + (data.audit_id || data.auditId || 'TS-LOG'));
+      };
+
+      document.getElementById('scanResultCard').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Submit handler connecting to real POST /api/scan-url
+    document.getElementById('urlScanForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const val = urlInput.value.trim();
+      if (!val) return;
+
+      const submitBtn = document.getElementById('urlSubmitBtn');
+      const loadingBox = document.getElementById('scanLoadingBox');
+
+      submitBtn.disabled = true;
+      loadingBox.classList.remove('hidden');
+
+      try {
+        const res = await fetch('/api/scan-url', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target: val, url: val })
+        });
+
+        if (!res.ok) throw new Error(`Server returned HTTP ${res.status}`);
+        const data = await res.json();
+        renderAnalysisResult(data);
+
+      } catch (err) {
+        alert("Scan Failed: " + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        loadingBox.classList.add('hidden');
+      }
+    });
+
+    // Auto-scan if ?target= query param exists in URL
+    document.addEventListener('DOMContentLoaded', () => {
+      initRadar(75, 80, 85, 70);
+      const params = new URLSearchParams(window.location.search);
+      const targetParam = params.get('target');
+      if (targetParam) {
+        urlInput.value = targetParam;
+        urlInput.dispatchEvent(new Event('input'));
+        document.getElementById('urlScanForm').dispatchEvent(new Event('submit'));
+      }
+    });
+  </script>
+</body>
+</html>
